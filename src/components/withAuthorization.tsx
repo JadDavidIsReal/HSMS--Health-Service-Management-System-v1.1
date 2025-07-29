@@ -17,6 +17,9 @@ const withAuthorization = <P extends object>(
     }
 
     if (!allowedRoles.includes(user.role)) {
+      if (user.role === 'patient') {
+        return <Navigate to="/patient-landing" replace />;
+      }
       return <Navigate to="/unauthorized" replace />;
     }
 
