@@ -23,7 +23,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
         </Button>
         <div>
           <h2 className="text-lg font-semibold text-foreground">
-            University Health Services
+            UIC - School Clinic
           </h2>
           <p className="text-sm text-muted-foreground">
             Welcome back, {user?.name}
