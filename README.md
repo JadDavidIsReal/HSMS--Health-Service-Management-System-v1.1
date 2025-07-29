@@ -1,73 +1,181 @@
-# Welcome to your Lovable project
+# Health Services Management System (HSMS)
 
-## Project info
+A comprehensive web-based Health Services Management System designed for school clinics, built with React, TypeScript, and Tailwind CSS.
 
-**URL**: https://lovable.dev/projects/30b1412f-9cbb-4ffb-8c3c-b50e26153f39
+## 🏥 Overview
 
-## How can I edit this code?
+This system provides role-based access for three types of users:
 
-There are several ways of editing your application.
+- **Nurse** - Primary user with access to all pages except prescriptions
+- **Doctor** - Can log in and write official prescriptions for assigned patients
+- **Patient** - Students and employees who can view their own records and request appointments
 
-**Use Lovable**
+## ✨ Features
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/30b1412f-9cbb-4ffb-8c3c-b50e26153f39) and start prompting.
+### Dashboard
+- Role-specific summary cards with health services statistics
+- Recent activity feed
+- Quick action shortcuts
+- Responsive design with modern healthcare UI
 
-Changes made via Lovable will be committed automatically to this repo.
+### Patient Records (Nurse Only)
+- Complete patient database with CRUD operations
+- Search functionality by name, email, or ID
+- Medical history tracking
+- Student/Employee classification
+- Emergency contact information
 
-**Use your preferred IDE**
+### Appointments (All Roles)
+- **Nurse**: Full schedule management and appointment oversight
+- **Patient**: Request new appointments and view personal schedule
+- **Doctor**: View assigned appointments and patient schedules
+- Status management (Pending, Confirmed, Completed, Cancelled)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prescriptions (Doctor Only)
+- Digital prescription writing with patient selection
+- Medicine database with common medications
+- Dosage and instruction management
+- Prescription history and tracking
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### Medical Services (Nurse Only)
+- Service catalog management
+- Cost and duration tracking
+- Availability toggles
+- Service statistics and reporting
 
-Follow these steps:
+### Staff Directory (Nurse Only)
+- Complete staff information management
+- Role and department organization
+- Contact information tracking
+- Staff statistics overview
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🚀 Getting Started
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Prerequisites
+- Node.js (version 16 or higher)
+- npm or yarn package manager
 
-# Step 3: Install the necessary dependencies.
-npm i
+### Installation
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd hsms
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Start the development server:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+4. Open your browser and navigate to `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔐 Demo Credentials
 
-**Use GitHub Codespaces**
+The system includes demo credentials for testing:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### Nurse Access
+- **Email**: nurse@clinic.edu
+- **Password**: nurse123
+- **Access**: All pages except prescriptions
 
-## What technologies are used for this project?
+### Doctor Access
+- **Email**: doctor@clinic.edu  
+- **Password**: doctor123
+- **Access**: Dashboard, Appointments, Prescriptions
 
-This project is built with:
+### Patient Access
+- **Email**: student@clinic.edu
+- **Password**: student123
+- **Access**: Dashboard (patient view), Appointments (personal)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## 🛠 Tech Stack
 
-## How can I deploy this project?
+- **Frontend**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with custom healthcare design system
+- **UI Components**: Radix UI components (shadcn/ui)
+- **Icons**: Lucide React
+- **Routing**: React Router v6
+- **State Management**: React Context API
+- **Build Tool**: Vite
+- **Form Handling**: React Hook Form with Zod validation
 
-Simply open [Lovable](https://lovable.dev/projects/30b1412f-9cbb-4ffb-8c3c-b50e26153f39) and click on Share -> Publish.
+## 🎨 Design System
 
-## Can I connect a custom domain to my Lovable project?
+The application features a custom healthcare-themed design system with:
+- Medical-inspired color palette (blues, greens, healthcare tones)
+- Semantic color tokens for consistent theming
+- Responsive typography scale
+- Accessible contrast ratios
+- Mobile-first responsive design
 
-Yes, you can!
+## 📱 Mobile Responsive
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+The system is fully responsive and optimized for:
+- Desktop computers (primary use case)
+- Tablets (iPad, Android tablets)
+- Mobile phones (iOS, Android)
+- Various screen sizes and orientations
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## 🔧 Key Features
+
+### Authentication & Security
+- Role-based access control
+- Protected routes
+- Persistent login sessions
+- Automatic redirects based on user role
+
+### User Experience
+- Intuitive sidebar navigation with active state highlighting
+- Real-time form validation
+- Toast notifications for user feedback
+- Loading states and error handling
+- Search and filter functionality across all data tables
+
+### Data Management
+- Local state management with realistic mock data
+- CRUD operations for all major entities
+- Form validation and error handling
+- Optimistic UI updates
+
+## 📂 Project Structure
+
+```
+src/
+├── components/          # Reusable UI components
+│   ├── layout/         # Layout components (Header, Sidebar, etc.)
+│   └── ui/             # Base UI components (shadcn/ui)
+├── contexts/           # React Context providers
+├── data/              # Mock data and type definitions
+├── hooks/             # Custom React hooks
+├── pages/             # Main application pages
+└── lib/               # Utility functions
+```
+
+## 🔮 Future Enhancements
+
+- Integration with real backend API
+- Advanced reporting and analytics
+- Appointment calendar view
+- Email notifications
+- Document upload and management
+- Telemedicine integration
+- Insurance management
+- Billing system integration
+
+## 📄 License
+
+This project is created for educational purposes as part of a school project showcase.
+
+## 🤝 Contributing
+
+This is a student project, but feedback and suggestions are welcome for learning purposes.
+
+---
+
+**Note**: This is a frontend prototype using mock data. No real patient information is stored or processed.
