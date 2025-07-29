@@ -29,7 +29,7 @@ const Login: React.FC = () => {
       if (success) {
         toast({
           title: "Login successful",
-          description: "Welcome to Health Services Management System",
+          description: "Welcome to Meditrack Medicine Inventory System",
         });
       } else {
         toast({
@@ -61,15 +61,15 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-pink-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         {/* Logo and Title */}
         <div className="text-center">
           <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
             <Stethoscope className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Health Services</h1>
-          <p className="text-muted-foreground">Management System</p>
+          <h1 className="text-2xl font-bold text-foreground">Meditrack</h1>
+          <p className="text-muted-foreground">Medicine Inventory System</p>
         </div>
 
         {/* Login Form */}
@@ -154,7 +154,7 @@ const Login: React.FC = () => {
         </Card>
 
         <div className="text-center text-sm text-muted-foreground">
-          University Health Services © 2024
+          UIC - School Clinic © 2024
         </div>
       </div>
     </div>
