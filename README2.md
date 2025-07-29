@@ -16,6 +16,18 @@ This document outlines the changes made to the original project.
 - **Brand Name:** The brand name in the header has been updated to "UIC - School Clinic".
 - **Color Scheme:** The color scheme has been updated to a professional-looking dark pink and white theme. The new color variables are defined in `src/index.css`.
 
+## Patch Notes - 2025-07-29
+
+### Login Page
+- Changed "Health Services Management System" to "Meditrack Medicine Inventory System".
+- Changed the background color to pink (#ed8ca6).
+
+### Dashboard
+- Fixed the desktop view of the dashboard to be more responsive.
+
+### Header
+- Added a real-time clock with the date and time in Philippine Standard Time.
+
 ## Future Improvements
 
 - **Implement User Authentication:** The current project has a mock authentication system. A proper authentication system with user roles and permissions should be implemented.

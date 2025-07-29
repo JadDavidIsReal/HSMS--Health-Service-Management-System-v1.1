@@ -2,6 +2,7 @@ import React from 'react';
 import { Menu, Bell } from 'lucide-react';
 import { Button } from '../ui/button';
 import { useAuth } from '../../contexts/AuthContext';
+import RealTimeClock from './RealTimeClock';
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -32,6 +33,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar }) => {
       </div>
 
       <div className="flex items-center space-x-4">
+        <RealTimeClock />
         <Button variant="ghost" size="sm" className="relative">
           <Bell className="h-5 w-5" />
           <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full h-4 w-4 flex items-center justify-center">

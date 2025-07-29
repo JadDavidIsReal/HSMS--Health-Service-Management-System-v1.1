@@ -67,8 +67,8 @@ const AppSidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
       <div className={`
         fixed top-0 left-0 h-full bg-card border-r border-border z-50 transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        lg:translate-x-0 lg:static lg:z-auto
-        w-64 flex flex-col
+        lg:relative lg:translate-x-0
+        w-64 flex-shrink-0 flex flex-col
       `}>
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-border">
