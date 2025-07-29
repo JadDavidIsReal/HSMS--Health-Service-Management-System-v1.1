@@ -153,7 +153,7 @@ const Login: React.FC = () => {
         </Card>
 
         <div className="text-center text-sm text-gray-500">
-          UIC - School Clinic © 2024
+          UIC - School Clinic © 2025
         </div>
       </div>
     </div>
