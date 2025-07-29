@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Edit, Phone, Mail, Calendar, UserCheck } from 'lucide-react';
 import { mockStaff, Staff } from '../data/mockData';
-import { Input } from '../components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { useToast } from '../hooks/use-toast';
 
 const StaffDirectory: React.FC = () => {
   const [staff, setStaff] = useState<Staff[]>(mockStaff);
@@ -16,7 +7,6 @@ const StaffDirectory: React.FC = () => {
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [filterRole, setFilterRole] = useState<string>('all');
-  const { toast } = useToast();
 
   const filteredStaff = staff.filter(member => {
     const matchesSearch = member.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -33,221 +23,103 @@ const StaffDirectory: React.FC = () => {
 
   const handleSaveStaff = (formData: any) => {
     if (selectedStaff) {
-      setStaff(staff.map(s => 
-        s.id === selectedStaff.id 
+      setStaff(staff.map(s =>
+        s.id === selectedStaff.id
           ? { ...selectedStaff, ...formData }
           : s
       ));
-      toast({
-        title: "Staff updated",
-        description: "Staff member information has been successfully updated.",
-      });
     }
     setIsDialogOpen(false);
   };
 
-  const getRoleColor = (role: Staff['role']) => {
-    switch (role) {
-      case 'Doctor': return 'bg-primary';
-      case 'Nurse': return 'bg-secondary';
-      case 'Admin': return 'bg-warning';
-      case 'Receptionist': return 'bg-info';
-      default: return 'bg-muted';
-    }
-  };
-
-  const getDepartmentStats = () => {
-    const departments = staff.reduce((acc, member) => {
-      acc[member.department] = (acc[member.department] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    return departments;
-  };
-
-  const getRoleStats = () => {
-    const roles = staff.reduce((acc, member) => {
-      acc[member.role] = (acc[member.role] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    return roles;
-  };
-
-  const departmentStats = getDepartmentStats();
-  const roleStats = getRoleStats();
-
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Staff Directory</h1>
-          <p className="text-muted-foreground">View and manage health services staff information</p>
-        </div>
+      <div>
+        <h1 className="text-2xl font-bold">Staff Directory</h1>
+        <p className="text-gray-500">View and manage health services staff information</p>
       </div>
 
-      {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
+          <input
+            type="text"
             placeholder="Search staff by name, email, or department..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="w-full border border-gray-300 rounded-md p-2 pl-10"
           />
         </div>
-        <Select value={filterRole} onValueChange={setFilterRole}>
-          <SelectTrigger className="w-full sm:w-48">
-            <SelectValue placeholder="Filter by role" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="Doctor">Doctors</SelectItem>
-            <SelectItem value="Nurse">Nurses</SelectItem>
-            <SelectItem value="Admin">Administrators</SelectItem>
-            <SelectItem value="Receptionist">Receptionists</SelectItem>
-          </SelectContent>
-        </Select>
+        <select
+          value={filterRole}
+          onChange={(e) => setFilterRole(e.target.value)}
+          className="w-full sm:w-48 border border-gray-300 rounded-md p-2"
+        >
+          <option value="all">All Roles</option>
+          <option value="Doctor">Doctors</option>
+          <option value="Nurse">Nurses</option>
+          <option value="Admin">Administrators</option>
+          <option value="Receptionist">Receptionists</option>
+        </select>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-primary">{staff.length}</div>
-            <p className="text-sm text-muted-foreground">Total Staff</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-secondary">{roleStats.Doctor || 0}</div>
-            <p className="text-sm text-muted-foreground">Doctors</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-success">{roleStats.Nurse || 0}</div>
-            <p className="text-sm text-muted-foreground">Nurses</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <div className="text-2xl font-bold text-warning">{filteredStaff.length}</div>
-            <p className="text-sm text-muted-foreground">Search Results</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Department Overview */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Department Overview</CardTitle>
-            <CardDescription>Staff distribution by department</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {Object.entries(departmentStats).map(([department, count]) => (
-                <div key={department} className="flex justify-between items-center">
-                  <span className="text-sm font-medium">{department}</span>
-                  <Badge variant="outline">{count} staff</Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Role Distribution</CardTitle>
-            <CardDescription>Staff count by role</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {Object.entries(roleStats).map(([role, count]) => (
-                <div key={role} className="flex justify-between items-center">
-                  <span className="text-sm font-medium">{role}</span>
-                  <Badge className={getRoleColor(role as Staff['role'])}>{count}</Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Staff Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredStaff.map((staffMember) => (
-          <Card key={staffMember.id} className="hover:shadow-md transition-shadow">
-            <CardHeader>
-              <div className="flex justify-between items-start">
-                <div className="flex-1">
-                  <CardTitle className="text-lg">{staffMember.name}</CardTitle>
-                  <CardDescription>{staffMember.department}</CardDescription>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Badge className={getRoleColor(staffMember.role)}>
-                    {staffMember.role}
-                  </Badge>
-                  <Button variant="ghost" size="sm" onClick={() => handleEditStaff(staffMember)}>
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                </div>
+          <div key={staffMember.id} className="border rounded-md p-4 hover:shadow-md transition-shadow">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <h2 className="text-lg font-bold">{staffMember.name}</h2>
+                <p className="text-sm text-gray-500">{staffMember.department}</p>
               </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <span className="text-xs font-semibold bg-pink-500 text-white px-2 py-1 rounded-full">
+                  {staffMember.role}
+                </span>
+                <button onClick={() => handleEditStaff(staffMember)}>
+                  Edit
+                </button>
+              </div>
+            </div>
+            <div className="space-y-3 mt-4">
               <div className="space-y-2">
                 <div className="flex items-center space-x-2 text-sm">
-                  <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="truncate">{staffMember.email}</span>
+                  <span>{staffMember.email}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
-                  <Phone className="h-4 w-4 text-muted-foreground" />
                   <span>{staffMember.phone}</span>
                 </div>
                 <div className="flex items-center space-x-2 text-sm">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>Joined {new Date(staffMember.joinDate).toLocaleDateString()}</span>
                 </div>
               </div>
-
-              <div className="pt-3 border-t">
-                <p className="text-xs text-muted-foreground">
-                  {staffMember.role} in {staffMember.department}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
       {filteredStaff.length === 0 && (
-        <Card>
-          <CardContent className="text-center py-8">
-            <UserCheck className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-foreground mb-2">No staff found</h3>
-            <p className="text-muted-foreground">
-              {searchTerm || filterRole !== 'all'
-                ? 'No staff members match your search criteria.'
-                : 'No staff members have been added yet.'
-              }
-            </p>
-          </CardContent>
-        </Card>
+        <div className="text-center py-8">
+          <h3 className="text-lg font-medium mb-2">No staff found</h3>
+          <p className="text-gray-500">
+            {searchTerm || filterRole !== 'all'
+              ? 'No staff members match your search criteria.'
+              : 'No staff members have been added yet.'
+            }
+          </p>
+        </div>
       )}
 
-      {/* Edit Staff Dialog */}
-      <StaffDialog
-        isOpen={isDialogOpen}
-        onClose={() => setIsDialogOpen(false)}
-        onSave={handleSaveStaff}
-        staff={selectedStaff}
-      />
+      {isDialogOpen && (
+        <StaffDialog
+          isOpen={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          onSave={handleSaveStaff}
+          staff={selectedStaff}
+        />
+      )}
     </div>
   );
 };
 
-// Staff Dialog Component
 interface StaffDialogProps {
   isOpen: boolean;
   onClose: () => void;
@@ -284,7 +156,7 @@ const StaffDialog: React.FC<StaffDialogProps> = ({ isOpen, onClose, onSave, staf
   const roles = ['Doctor', 'Nurse', 'Admin', 'Receptionist'];
   const departments = [
     'General Medicine',
-    'Family Medicine', 
+    'Family Medicine',
     'Mental Health',
     'Administration',
     'IT Support',
@@ -292,90 +164,95 @@ const StaffDialog: React.FC<StaffDialogProps> = ({ isOpen, onClose, onSave, staf
     'Preventive Care'
   ];
 
+  if (!isOpen) {
+    return null;
+  }
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Edit Staff Member</DialogTitle>
-          <DialogDescription>
-            Update staff member information
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-md max-w-md w-full">
+        <h2 className="text-xl font-bold">Edit Staff Member</h2>
+        <p className="text-gray-500">Update staff member information</p>
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+          <div>
+            <label htmlFor="name">Full Name</label>
+            <input
               id="name"
+              type="text"
               value={formData.name}
-              onChange={(e) => setFormData({...formData, name: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full border border-gray-300 rounded-md p-2"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="role">Role</Label>
-            <Select value={formData.role} onValueChange={(value) => setFormData({...formData, role: value})}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select role" />
-              </SelectTrigger>
-              <SelectContent>
-                {roles.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div>
+            <label htmlFor="role">Role</label>
+            <select
+              id="role"
+              value={formData.role}
+              onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+              className="w-full border border-gray-300 rounded-md p-2"
+            >
+              {roles.map((role) => (
+                <option key={role} value={role}>
+                  {role}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="department">Department</Label>
-            <Select value={formData.department} onValueChange={(value) => setFormData({...formData, department: value})}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select department" />
-              </SelectTrigger>
-              <SelectContent>
-                {departments.map((dept) => (
-                  <SelectItem key={dept} value={dept}>
-                    {dept}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+          <div>
+            <label htmlFor="department">Department</label>
+            <select
+              id="department"
+              value={formData.department}
+              onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+              className="w-full border border-gray-300 rounded-md p-2"
+            >
+              {departments.map((dept) => (
+                <option key={dept} value={dept}>
+                  {dept}
+                </option>
+              ))}
+            </select>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
               id="email"
               type="email"
               value={formData.email}
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full border border-gray-300 rounded-md p-2"
               required
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone Number</Label>
-            <Input
+          <div>
+            <label htmlFor="phone">Phone Number</label>
+            <input
               id="phone"
+              type="text"
               value={formData.phone}
-              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full border border-gray-300 rounded-md p-2"
               required
             />
           </div>
 
           <div className="flex space-x-3 pt-4">
-            <Button type="submit" className="flex-1">
+            <button type="submit" className="flex-1 bg-pink-500 text-white px-4 py-2 rounded-md">
               Update Staff
-            </Button>
-            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+            </button>
+            <button type="button" onClick={onClose} className="flex-1 border border-gray-300 px-4 py-2 rounded-md">
               Cancel
-            </Button>
+            </button>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
