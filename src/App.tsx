@@ -18,10 +18,12 @@ import History from "./pages/History";
 import Reports from "./pages/Reports";
 import Chat from "./pages/Chat";
 import BookAppointment from "./pages/BookAppointment";
+import PatientLanding from "./pages/PatientLanding";
 
 const AuthorizedDashboard = withAuthorization(Dashboard);
 const AuthorizedPatientRecords = withAuthorization(PatientRecords);
 const AuthorizedAppointments = withAuthorization(Appointments);
+const AuthorizedPatientLanding = withAuthorization(PatientLanding);
 const AuthorizedPatients = withAuthorization(Patients);
 const AuthorizedPatientProfile = withAuthorization(PatientProfile);
 const AuthorizedStocks = withAuthorization(Stocks);
@@ -140,6 +142,14 @@ const App = () => (
           element={
             <Layout>
               <AuthorizedBookAppointment allowedRoles={["patient"]} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/patient-landing"
+          element={
+            <Layout>
+              <AuthorizedPatientLanding allowedRoles={["patient"]} />
             </Layout>
           }
         />

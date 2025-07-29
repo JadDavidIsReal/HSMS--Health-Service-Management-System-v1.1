@@ -11,7 +11,7 @@ export interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<User | null>;
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -41,17 +41,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<User | null> => {
     const credential = mockCredentials.find(c => c.email === email && c.password === password);
     if (credential) {
       const userData = mockUsers.find(u => u.email === email);
       if (userData) {
         setUser(userData);
         localStorage.setItem('hsms_user', JSON.stringify(userData));
-        return true;
+        return userData;
       }
     }
-    return false;
+    return null;
   };
 
   const logout = () => {
