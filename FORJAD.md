@@ -1,66 +1,62 @@
-# FORJAD's Guide to the HSMS Project
+# HSMS Project Documentation
 
-Yo, future me, or whoever is reading this. Here's a chill guide to understanding this project. No jargon, just the straight dope.
+## Introduction
 
-## What is this thing?
+This document provides a comprehensive overview of the Health Services Management System (HSMS) project. It is intended to serve as a guide for understanding the project's architecture, features, and future development path.
 
-It's a **Health Services Management System (HSMS)**. Think of it as the app the nurse at your school clinic uses to keep track of patients, appointments, and all that jazz. It's built with **React** (a popular JavaScript library for building user interfaces) and **Tailwind CSS** (a utility-first CSS framework for styling).
+## System Architecture
 
-## Where's the "Backend"?
+The HSMS is a frontend-only application built with **React** and styled with **Tailwind CSS**. It is designed to be a single-page application (SPA) that can be easily integrated with a backend API in the future.
 
-Right now, there isn't a real backend. All the data you see is **mock data**, which is just a fancy way of saying it's fake data that's hardcoded into the project. This is so we can build and test the frontend without needing a database or a server.
+### Frontend
 
-You can find all the mock data in the `src/data/mockData.ts` file. This file contains arrays of objects for patients, appointments, prescriptions, etc.
+The frontend is responsible for rendering the user interface and handling all user interactions. It is built with the following technologies:
 
-## How to Remove the Mock Data and Use a Real Backend (like Laravel)
+-   **React:** A JavaScript library for building user interfaces.
+-   **Tailwind CSS:** A utility-first CSS framework for styling.
+-   **React Router:** A library for handling routing in a React application.
+-   **React Context:** A feature for managing state in a React application.
 
-When you're ready to use a real backend, you'll need to do a few things:
+### Backend
 
-1.  **Set up your Laravel backend:** This will involve creating a database and building an API that the frontend can talk to. Your API will have endpoints for getting, creating, updating, and deleting data (e.g., `/api/patients`, `/api/appointments`, etc.).
+Currently, the project does not have a backend. All data is mocked and stored in the `src/data/mockData.ts` file. This allows for rapid development and testing of the frontend without the need for a database or server.
 
-2.  **Replace the mock data with API calls:** In each of the page components (e.g., `src/pages/Patients.tsx`, `src/pages/Appointments.tsx`), you'll need to replace the mock data with API calls to your Laravel backend. You can use the `fetch` API or a library like `axios` to make these calls.
+## Codebase Overview
 
-    For example, instead of this:
+### Folder Structure
 
-    ```javascript
-    import { mockPatients } from '../data/mockData';
+The project is organized into the following folders:
 
-    const [patients, setPatients] = useState(mockPatients);
-    ```
+-   `src/assets`: Contains static assets such as images and icons.
+-   `src/components`: Contains reusable UI components.
+    -   `src/components/layout`: Contains the main layout components, such as the header and sidebar.
+    -   `src/components/ui`: Contains the basic UI components, such as buttons, inputs, and cards.
+-   `src/contexts`: Contains the React Context providers. The `AuthContext` is used to manage the user's authentication state.
+-   `src/data`: Contains the mock data for the application.
+-   `src/hooks`: Contains custom React hooks.
+-   `src/pages`: Contains the main pages of the application. Each page is a separate file.
+-   `src/lib`: Contains utility functions.
 
-    You would do something like this:
+### User Roles and Feature Implementation
 
-    ```javascript
-    import { useState, useEffect } from 'react';
+The application supports three user roles: Nurse, Doctor, and Student/Patient. The code for each role is primarily located in the `src/pages` directory.
 
-    const [patients, setPatients] = useState([]);
+-   **Nurse:** The Nurse has access to most of the application's features. The code for the Nurse's dashboard, patient records, appointments, stocks, history, and reports can be found in the corresponding files in the `src/pages` directory.
+-   **Doctor:** The Doctor has a more limited set of features. The code for the Doctor's dashboard, prescriptions, and chat can be found in the corresponding files in the `src/pages` directory. The Doctor can also edit the Doctor's Notes in the `PatientProfile` component.
+-   **Student/Patient:** The Student/Patient has the most limited set of features. They are redirected to a dedicated landing page after logging in. The code for the patient landing page, appointment booking form, and read-only patient profile can be found in the corresponding files in the `src/pages` directory.
 
-    useEffect(() => {
-      fetch('/api/patients')
-        .then(response => response.json())
-        .then(data => setPatients(data));
-    }, []);
-    ```
+### Authentication and Authorization
 
-3.  **Update the components to handle loading and error states:** Since you'll be fetching data from a server, you'll need to add loading and error states to your components. This will let the user know that something is happening and handle any errors that might occur.
+Authentication is handled by the `AuthContext`. When a user logs in, their information is stored in local storage, so they will remain logged in even if they refresh the page.
 
-## Where to Find Everything
+Authorization is handled by the `withAuthorization` higher-order component (HOC). This HOC wraps each page and checks if the user has the required role to access the page. If the user is not authorized, they are redirected to an "Unauthorized" page or the patient landing page, depending on their role.
 
-Here's a quick rundown of the project structure:
+## Future Backend Integration (Laravel)
 
--   `src/components`: This is where all the reusable UI components live.
-    -   `src/components/layout`: This is where the main layout components are, like the header and sidebar.
-    -   `src/components/ui`: This is where the basic UI components are, like buttons, inputs, and cards.
--   `src/contexts`: This is where the React Context providers are. We use a context to manage the user's authentication state.
--   `src/data`: This is where the mock data is.
--   `src/hooks`: This is where any custom React hooks are.
--   `src/pages`: This is where all the main pages of the application are. Each page is a separate file.
--   `src/lib`: This is where any utility functions are.
+To integrate the application with a Laravel backend, the following steps should be taken:
 
-## The Important Stuff
-
--   **Authentication:** The authentication is handled by the `AuthContext`. When a user logs in, their information is stored in local storage, so they'll stay logged in even if they refresh the page.
--   **Routing:** The routing is handled by `react-router-dom`. All the routes are defined in the `src/App.tsx` file.
--   **Styling:** The styling is done with Tailwind CSS. You can find all the color definitions in the `src/index.css` file.
-
-That's the gist of it. If you have any questions, just read the code. It's pretty straightforward. Peace out. ✌️
+1.  **Set up the Laravel Backend:** Create a new Laravel project and set up a database.
+2.  **Create API Endpoints:** Create API endpoints for all the data that the frontend needs. This will involve creating controllers, models, and routes for each resource (e.g., patients, appointments, etc.).
+3.  **Replace Mock Data with API Calls:** In each of the page components, replace the mock data with API calls to the Laravel backend. The `fetch` API or a library like `axios` can be used to make these calls.
+4.  **Handle Loading and Error States:** Add loading and error states to the components to provide feedback to the user while the data is being fetched.
+5.  **Implement User Authentication:** Replace the mock authentication with a proper authentication system. This will involve creating a login and registration system in the Laravel backend and using a token-based authentication system (e.g., JWT) to authenticate users on the frontend.
