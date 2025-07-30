@@ -60,3 +60,26 @@ To integrate the application with a Laravel backend, the following steps should 
 3.  **Replace Mock Data with API Calls:** In each of the page components, replace the mock data with API calls to the Laravel backend. The `fetch` API or a library like `axios` can be used to make these calls.
 4.  **Handle Loading and Error States:** Add loading and error states to the components to provide feedback to the user while the data is being fetched.
 5.  **Implement User Authentication:** Replace the mock authentication with a proper authentication system. This will involve creating a login and registration system in the Laravel backend and using a token-based authentication system (e.g., JWT) to authenticate users on the frontend.
+
+## How to Change the Favicon
+
+The favicon is the small icon that appears in the browser tab. To change the favicon, you need to replace the `favicon.ico` file in the `public` directory with your new favicon file.
+
+### File Location
+
+The current favicon is located at `public/favicon.ico`.
+
+### How it's Called
+
+The favicon is called in the `index.html` file on line 8:
+
+```html
+<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+```
+
+This line tells the browser to use the `favicon.ico` file as the favicon for the website.
+
+### Technical Details
+
+-   **ICO Format:** The ICO file format is a standard for icons in Microsoft Windows. It can contain multiple images of different sizes and color depths. This allows the browser to choose the best image for the context in which it is being displayed.
+-   **Favicon Best Practices:** It is recommended to use a square image for the favicon. The most common sizes are 16x16, 32x32, and 48x48 pixels. You can use an online converter to convert your image to the ICO format.
