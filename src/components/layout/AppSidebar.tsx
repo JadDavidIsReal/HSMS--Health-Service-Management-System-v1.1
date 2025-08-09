@@ -15,13 +15,14 @@ const AppSidebar: React.FC<SidebarProps> = ({ isOpen, toggleSidebar }) => {
     const baseItems = [
       { title: 'Dashboard', url: '/dashboard', roles: ['nurse', 'doctor'] },
       { title: 'Appointments', url: '/appointments', roles: ['nurse', 'doctor'] },
-      { title: 'Patients', url: '/patients', roles: ['nurse', 'doctor'] },
+      { title: 'Search', url: '/patients', roles: ['nurse'] },
+      { title: 'Nurses by Campus', url: '/nurses-by-campus', roles: ['doctor'] },
       { title: 'Stocks', url: '/stocks', roles: ['nurse'] },
-      { title: 'History', url: '/history', roles: ['nurse'] },
-      { title: 'Reports', url: '/reports', roles: ['nurse'] },
-      { title: 'Prescriptions', url: '/prescriptions', roles: ['doctor'] },
+      { title: 'Clinic History', url: '/history', roles: ['nurse', 'doctor', 'patient'] },
+      { title: 'Analytics', url: '/reports', roles: ['nurse'] },
+      { title: 'Prescriptions', url: '/prescriptions', roles: ['nurse'] },
       { title: 'Chat', url: '/chat', roles: ['nurse', 'doctor'] },
-      { title: 'Book Appointment', url: '/book-appointment', roles: ['patient'] },
+      { title: 'Create Consultation', url: '/book-appointment', roles: ['patient'] },
       { title: 'About', url: '/about', roles: ['nurse', 'doctor', 'patient'] },
     ];
 

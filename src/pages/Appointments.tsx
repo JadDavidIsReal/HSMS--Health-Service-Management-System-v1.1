@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { mockAppointments, mockPatients, Appointment } from '../data/mockData';
+import { Appointment } from '../data/mockData';
 import { useAuth } from '../contexts/AuthContext';
 
 const Appointments: React.FC = () => {
-  const { user } = useAuth();
-  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
+  const { user, appointments, setAppointments, patients } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'today' | 'pending' | 'confirmed' | 'completed'>('all');
+  const [selectedFilter, setSelectedFilter] = useState<'all' | 'today' | 'pending' | 'confirmed' | 'completed'>(() => {
+    if (user?.role === 'doctor') return 'pending';
+    if (user?.role === 'nurse') return 'pending';
+    return 'all';
+  });
 
   const getFilteredAppointments = () => {
     let filtered = appointments;
@@ -44,14 +47,15 @@ const Appointments: React.FC = () => {
     const newAppointment: Appointment = {
       id: (appointments.length + 1).toString(),
       patientId: user?.role === 'patient' ? user.id : formData.patientId,
-      patientName: user?.role === 'patient' ? user.name : mockPatients.find(p => p.id === formData.patientId)?.name || '',
+      patientName: user?.role === 'patient' ? user.name : patients.find(p => p.id === formData.patientId)?.name || '',
       doctorId: formData.doctorId,
       doctorName: formData.doctorId === '2' ? 'Dr. Michael Chen' : undefined,
       date: formData.date,
       time: formData.time,
       type: formData.type,
       status: user?.role === 'patient' ? 'Pending' : 'Confirmed',
-      notes: formData.notes
+      notes: formData.notes,
+      temperature: formData.temperature ? parseFloat(formData.temperature) : undefined
     };
 
     setAppointments([...appointments, newAppointment]);
@@ -59,6 +63,12 @@ const Appointments: React.FC = () => {
   };
 
   const canManageAppointments = user?.role === 'nurse' || user?.role === 'doctor';
+
+  const filterOptions = user?.role === 'doctor'
+    ? ['pending', 'completed']
+    : user?.role === 'nurse'
+    ? ['pending', 'confirmed', 'completed']
+    : ['all', 'today', 'pending', 'confirmed', 'completed'];
 
   return (
     <div className="space-y-6">
@@ -78,13 +88,13 @@ const Appointments: React.FC = () => {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {['all', 'today', 'pending', 'confirmed', 'completed'].map((filter) => (
+        {filterOptions.map((filter) => (
           <button
             key={filter}
             onClick={() => setSelectedFilter(filter as any)}
             className={`px-3 py-1 rounded-md text-sm ${selectedFilter === filter ? 'bg-pink-500 text-white' : 'bg-gray-200 text-gray-800'}`}
           >
-            {filter === 'all' ? 'All Appointments' : filter}
+            {filter.charAt(0).toUpperCase() + filter.slice(1)}
           </button>
         ))}
       </div>
@@ -106,6 +116,7 @@ const Appointments: React.FC = () => {
                 appointment.status === 'Confirmed' ? 'bg-green-500 text-white' :
                 appointment.status === 'Pending' ? 'bg-yellow-500 text-white' :
                 appointment.status === 'Completed' ? 'bg-blue-500 text-white' :
+                appointment.status === 'Referred' ? 'bg-purple-500 text-white' :
                 'bg-red-500 text-white'
               }`}>
                 {appointment.status}
@@ -125,28 +136,48 @@ const Appointments: React.FC = () => {
                 </div>
               )}
               {canManageAppointments && appointment.status === 'Pending' && (
-                <div className="flex space-x-2 pt-2">
-                  <button
-                    onClick={() => handleStatusChange(appointment.id, 'Confirmed')}
-                    className="flex-1 bg-green-500 text-white px-3 py-1 rounded-md"
-                  >
-                    Confirm
-                  </button>
-                  <button
-                    onClick={() => handleStatusChange(appointment.id, 'Cancelled')}
-                    className="flex-1 border border-gray-300 px-3 py-1 rounded-md"
-                  >
-                    Cancel
-                  </button>
+                <div className="flex flex-col space-y-2 pt-2">
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => handleStatusChange(appointment.id, 'Confirmed')}
+                      className="flex-1 bg-green-500 text-white px-3 py-1 rounded-md"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() => handleStatusChange(appointment.id, 'Cancelled')}
+                      className="flex-1 border border-gray-300 px-3 py-1 rounded-md"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                  {user?.role === 'nurse' && (
+                    <button
+                      onClick={() => handleStatusChange(appointment.id, 'Referred')}
+                      className="w-full bg-blue-500 text-white px-3 py-1 rounded-md"
+                    >
+                      Refer to Doctor
+                    </button>
+                  )}
                 </div>
               )}
               {canManageAppointments && appointment.status === 'Confirmed' && (
-                <button
-                  onClick={() => handleStatusChange(appointment.id, 'Completed')}
-                  className="w-full bg-blue-500 text-white px-3 py-1 rounded-md mt-2"
-                >
-                  Mark as Completed
-                </button>
+                 <div className="flex flex-col space-y-2 pt-2">
+                    <button
+                      onClick={() => handleStatusChange(appointment.id, 'Completed')}
+                      className="w-full bg-green-500 text-white px-3 py-1 rounded-md"
+                    >
+                      Mark as Completed
+                    </button>
+                    {user?.role === 'nurse' && (
+                      <button
+                        onClick={() => handleStatusChange(appointment.id, 'Referred')}
+                        className="w-full bg-blue-500 text-white px-3 py-1 rounded-md"
+                      >
+                        Refer to Doctor
+                      </button>
+                    )}
+                </div>
               )}
             </div>
           </div>
@@ -174,6 +205,7 @@ const Appointments: React.FC = () => {
           onClose={() => setIsDialogOpen(false)}
           onSave={handleAddAppointment}
           userRole={user?.role || 'patient'}
+          patients={patients}
         />
       )}
     </div>
@@ -185,16 +217,18 @@ interface AppointmentDialogProps {
   onClose: () => void;
   onSave: (data: any) => void;
   userRole: string;
+  patients: any[];
 }
 
-const AppointmentDialog: React.FC<AppointmentDialogProps> = ({ isOpen, onClose, onSave, userRole }) => {
+const AppointmentDialog: React.FC<AppointmentDialogProps> = ({ isOpen, onClose, onSave, userRole, patients }) => {
   const [formData, setFormData] = useState({
     patientId: '',
     doctorId: '',
     date: '',
     time: '',
     type: '',
-    notes: ''
+    notes: '',
+    temperature: ''
   });
 
   const appointmentTypes = [
@@ -217,7 +251,8 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({ isOpen, onClose, 
       date: '',
       time: '',
       type: '',
-      notes: ''
+      notes: '',
+      temperature: ''
     });
   };
 
@@ -248,7 +283,7 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({ isOpen, onClose, 
                 className="w-full border border-gray-300 rounded-md p-2"
               >
                 <option value="">Select patient</option>
-                {mockPatients.map((patient) => (
+                {patients.map((patient) => (
                   <option key={patient.id} value={patient.id}>
                     {patient.name} - {patient.studentId || patient.employeeId}
                   </option>
@@ -273,6 +308,21 @@ const AppointmentDialog: React.FC<AppointmentDialogProps> = ({ isOpen, onClose, 
               ))}
             </select>
           </div>
+
+          {userRole === 'nurse' && (
+            <div>
+              <label htmlFor="temperature">Temperature (°C)</label>
+              <input
+                id="temperature"
+                type="number"
+                step="0.1"
+                value={formData.temperature}
+                onChange={(e) => setFormData({ ...formData, temperature: e.target.value })}
+                className="w-full border border-gray-300 rounded-md p-2"
+                placeholder="e.g., 37.5"
+              />
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4">
             <div>

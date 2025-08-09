@@ -15,10 +15,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-background flex">
-      <AppSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className="print:hidden">
+        <AppSidebar isOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
+      </div>
       
       <div className="flex-1 flex flex-col min-h-screen">
-        <Header toggleSidebar={toggleSidebar} />
+        <div className="print:hidden">
+          <Header toggleSidebar={toggleSidebar} />
+        </div>
         
         <main className="flex-1 p-6">
           {children}

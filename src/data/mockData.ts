@@ -9,6 +9,12 @@ export interface Patient {
   employeeId?: string;
   medicalHistory: string[];
   emergencyContact: string;
+  profileComplete?: boolean;
+  height?: number;
+  bloodType?: string;
+  department?: string;
+  campus?: string;
+  address?: string;
 }
 
 export interface Appointment {
@@ -20,8 +26,9 @@ export interface Appointment {
   date: string;
   time: string;
   type: string;
-  status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled';
+  status: 'Pending' | 'Confirmed' | 'Completed' | 'Cancelled' | 'Referred';
   notes?: string;
+  temperature?: number;
 }
 
 export interface Prescription {
@@ -66,7 +73,13 @@ export const mockPatients: Patient[] = [
     email: 'emma.wilson@university.edu',
     studentId: 'STU001',
     medicalHistory: ['Allergic to penicillin', 'Previous ankle injury'],
-    emergencyContact: '+1 (555) 987-6543'
+    emergencyContact: '+1 (555) 987-6543',
+    profileComplete: true,
+    height: 165,
+    bloodType: 'O+',
+    department: 'Computer Science',
+    campus: 'Main Campus',
+    address: '123 University Ave'
   },
   {
     id: '2',
@@ -77,7 +90,13 @@ export const mockPatients: Patient[] = [
     email: 'james.rodriguez@university.edu',
     studentId: 'STU002',
     medicalHistory: ['Asthma', 'Seasonal allergies'],
-    emergencyContact: '+1 (555) 876-5432'
+    emergencyContact: '+1 (555) 876-5432',
+    profileComplete: true,
+    height: 180,
+    bloodType: 'A-',
+    department: 'Business Administration',
+    campus: 'West Campus',
+    address: '456 College St'
   },
   {
     id: '3',
@@ -88,7 +107,8 @@ export const mockPatients: Patient[] = [
     email: 'lisa.thompson@university.edu',
     employeeId: 'EMP001',
     medicalHistory: ['Hypertension'],
-    emergencyContact: '+1 (555) 765-4321'
+    emergencyContact: '+1 (555) 765-4321',
+    profileComplete: true
   },
   {
     id: '4',
@@ -99,7 +119,13 @@ export const mockPatients: Patient[] = [
     email: 'marcus.johnson@university.edu',
     studentId: 'STU003',
     medicalHistory: ['No known allergies'],
-    emergencyContact: '+1 (555) 654-3210'
+    emergencyContact: '+1 (555) 654-3210',
+    profileComplete: true,
+    height: 175,
+    bloodType: 'B+',
+    department: 'Engineering',
+    campus: 'Main Campus',
+    address: '789 Innovation Dr'
   },
   {
     id: '5',
@@ -110,7 +136,13 @@ export const mockPatients: Patient[] = [
     email: 'sophia.chang@university.edu',
     studentId: 'STU004',
     medicalHistory: ['Lactose intolerant', 'Previous concussion'],
-    emergencyContact: '+1 (555) 543-2109'
+    emergencyContact: '+1 (555) 543-2109',
+    profileComplete: true,
+    height: 160,
+    bloodType: 'AB+',
+    department: 'Arts & Sciences',
+    campus: 'East Campus',
+    address: '101 Creative Ln'
   }
 ];
 

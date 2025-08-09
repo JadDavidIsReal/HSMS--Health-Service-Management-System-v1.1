@@ -11,27 +11,33 @@ import { useToast } from '../hooks/use-toast';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [name, setName] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { login, isAuthenticated, user } = useAuth();
+  const [isSignUp, setIsSignUp] = useState(false);
+  const { login, signup, isAuthenticated, user, patients } = useAuth();
+  const { toast } = useToast();
 
   if (isAuthenticated) {
     if (user?.role === 'patient') {
+      const patientProfile = patients.find(p => p.id === user.id);
+      if (patientProfile && !patientProfile.profileComplete) {
+        return <Navigate to="/complete-profile" replace />;
+      }
       return <Navigate to="/patient-landing" replace />;
     }
     return <Navigate to="/dashboard" replace />;
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-
     try {
       const user = await login(email, password);
       if (user) {
         toast({
           title: "Login successful",
-          description: "Welcome to Meditrack Medicine Inventory System",
+          description: "Welcome to the Health Service Management System.",
         });
       } else {
         toast({
@@ -51,15 +57,32 @@ const Login: React.FC = () => {
     }
   };
 
-  const demoCredentials = [
-    { role: 'Nurse', email: 'nurse@clinic.edu', password: 'nurse123' },
-    { role: 'Doctor', email: 'doctor@clinic.edu', password: 'doctor123' },
-    { role: 'Student/Patient', email: 'student@clinic.edu', password: 'student123' },
-  ];
-
-  const fillCredentials = (email: string, password: string) => {
-    setEmail(email);
-    setPassword(password);
+  const handleSignUpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const user = await signup(name, email, password);
+      if (user) {
+        toast({
+          title: "Sign up successful",
+          description: "Welcome! Please complete your profile.",
+        });
+      } else {
+        toast({
+          title: "Sign up failed",
+          description: "An account with this email may already exist.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -69,19 +92,32 @@ const Login: React.FC = () => {
           <div className="mx-auto w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-4">
             <Stethoscope className="h-8 w-8 text-primary-foreground" />
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Meditrack</h1>
-          <p className="text-muted-foreground">Medicine Inventory System</p>
+          <h1 className="text-2xl font-bold text-foreground">HSMS</h1>
+          <p className="text-muted-foreground">Health Service Management System</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Sign In</CardTitle>
+            <CardTitle>{isSignUp ? 'Sign Up' : 'Sign In'}</CardTitle>
             <CardDescription>
-              Enter your credentials to access the system
+              {isSignUp ? 'Create a new student account' : 'Enter your credentials to access the system'}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={isSignUp ? handleSignUpSubmit : handleLoginSubmit} className="space-y-4">
+              {isSignUp && (
+                <div className="space-y-2">
+                  <Label htmlFor="name">Full Name</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Enter your full name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -118,37 +154,15 @@ const Login: React.FC = () => {
               </div>
 
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? 'Signing in...' : 'Sign In'}
+                {isLoading ? 'Processing...' : (isSignUp ? 'Sign Up' : 'Sign In')}
               </Button>
             </form>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Demo Credentials</CardTitle>
-            <CardDescription>
-              Click on any role to automatically fill the login form
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {demoCredentials.map((cred) => (
-              <div
-                key={cred.role}
-                className="p-3 border border-border rounded-md cursor-pointer hover:bg-muted transition-colors"
-                onClick={() => fillCredentials(cred.email, cred.password)}
-              >
-                <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-medium text-foreground">{cred.role}</p>
-                    <p className="text-sm text-muted-foreground">{cred.email}</p>
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Click to use
-                  </div>
-                </div>
-              </div>
-            ))}
+            <div className="mt-4 text-center text-sm">
+              {isSignUp ? 'Already have an account?' : "Don't have an account?"}{' '}
+              <button onClick={() => setIsSignUp(!isSignUp)} className="font-medium text-primary hover:underline">
+                {isSignUp ? 'Sign In' : 'Sign Up'}
+              </button>
+            </div>
           </CardContent>
         </Card>
 

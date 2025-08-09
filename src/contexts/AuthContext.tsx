@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { mockPatients, Patient, mockAppointments, Appointment } from '../data/mockData';
 
 export type UserRole = 'nurse' | 'doctor' | 'patient';
 
@@ -14,6 +15,12 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<User | null>;
   logout: () => void;
   isAuthenticated: boolean;
+  patients: Patient[];
+  setPatients: React.Dispatch<React.SetStateAction<Patient[]>>;
+  appointments: Appointment[];
+  setAppointments: React.Dispatch<React.SetStateAction<Appointment[]>>;
+  signup: (name: string, email: string, password: string) => Promise<User | null>;
+  createPatientByNurse: (name: string, email: string) => Promise<Patient | null>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,6 +40,9 @@ const mockCredentials = [
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [patients, setPatients] = useState<Patient[]>(mockPatients);
+  const [appointments, setAppointments] = useState<Appointment[]>(mockAppointments);
 
   useEffect(() => {
     const savedUser = localStorage.getItem('hsms_user');
@@ -41,10 +51,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
+  const [credentials, setCredentials] = useState(mockCredentials);
+
   const login = async (email: string, password: string): Promise<User | null> => {
-    const credential = mockCredentials.find(c => c.email === email && c.password === password);
+    const credential = credentials.find(c => c.email === email && c.password === password);
     if (credential) {
-      const userData = mockUsers.find(u => u.email === email);
+      const userData = users.find(u => u.email === email);
       if (userData) {
         setUser(userData);
         localStorage.setItem('hsms_user', JSON.stringify(userData));
@@ -59,11 +71,78 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('hsms_user');
   };
 
+  const signup = async (name: string, email: string, password: string): Promise<User | null> => {
+    if (users.find(u => u.email === email)) {
+      // User already exists
+      return null;
+    }
+
+    const newUserId = (users.length + 1).toString();
+    const newUser: User = { id: newUserId, name, email, role: 'patient' };
+    const newPatient: Patient = {
+      id: newUserId,
+      name,
+      email,
+      age: 0, // Placeholder
+      gender: 'Other', // Placeholder
+      contact: '', // Placeholder
+      emergencyContact: '', // Placeholder
+      medicalHistory: [],
+      profileComplete: false,
+    };
+
+    setUsers(prev => [...prev, newUser]);
+    setPatients(prev => [...prev, newPatient]);
+    setCredentials(prev => [...prev, { email, password }]);
+
+    // Automatically log in the new user
+    setUser(newUser);
+    localStorage.setItem('hsms_user', JSON.stringify(newUser));
+
+    return newUser;
+  };
+
+  const createPatientByNurse = async (name: string, email: string): Promise<Patient | null> => {
+    if (users.find(u => u.email === email)) {
+      return null; // Already exists
+    }
+    const newUserId = (users.length + 1).toString();
+    const tempPassword = Math.random().toString(36).slice(-8); // Generate random password
+
+    const newUser: User = { id: newUserId, name, email, role: 'patient' };
+    const newPatient: Patient = {
+      id: newUserId,
+      name,
+      email,
+      age: 0,
+      gender: 'Other',
+      contact: '',
+      emergencyContact: '',
+      medicalHistory: [],
+      profileComplete: false,
+    };
+
+    setUsers(prev => [...prev, newUser]);
+    setPatients(prev => [...prev, newPatient]);
+    setCredentials(prev => [...prev, { email, password: tempPassword }]);
+
+    // Maybe log the temp password for the nurse to see?
+    console.log(`Created new patient ${name} with temporary password: ${tempPassword}`);
+
+    return newPatient;
+  };
+
   const value = {
     user,
     login,
     logout,
     isAuthenticated: !!user,
+    patients,
+    setPatients,
+    appointments,
+    setAppointments,
+    signup,
+    createPatientByNurse,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

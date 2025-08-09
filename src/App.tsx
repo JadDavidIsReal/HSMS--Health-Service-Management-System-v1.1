@@ -14,11 +14,14 @@ import NotFound from "./pages/NotFound";
 import Patients from "./pages/Patients";
 import PatientProfile from "./pages/PatientProfile";
 import Stocks from "./pages/Stocks";
-import History from "./pages/History";
-import Reports from "./pages/Reports";
+import ClinicHistory from "./pages/ClinicHistory";
+import Analytics from "./pages/Analytics";
 import Chat from "./pages/Chat";
 import BookAppointment from "./pages/BookAppointment";
 import PatientLanding from "./pages/PatientLanding";
+import AboutUs from "./pages/AboutUs";
+import NursesByCampusPage from "./pages/NursesByCampusPage";
+import CompleteProfile from "./pages/CompleteProfile";
 
 const AuthorizedDashboard = withAuthorization(Dashboard);
 const AuthorizedPatientRecords = withAuthorization(PatientRecords);
@@ -27,13 +30,16 @@ const AuthorizedPatientLanding = withAuthorization(PatientLanding);
 const AuthorizedPatients = withAuthorization(Patients);
 const AuthorizedPatientProfile = withAuthorization(PatientProfile);
 const AuthorizedStocks = withAuthorization(Stocks);
-const AuthorizedHistory = withAuthorization(History);
-const AuthorizedReports = withAuthorization(Reports);
+const AuthorizedClinicHistory = withAuthorization(ClinicHistory);
+const AuthorizedAnalytics = withAuthorization(Analytics);
 const AuthorizedChat = withAuthorization(Chat);
 const AuthorizedBookAppointment = withAuthorization(BookAppointment);
 const AuthorizedPrescriptions = withAuthorization(Prescriptions);
 const AuthorizedMedicalServices = withAuthorization(MedicalServices);
 const AuthorizedStaffDirectory = withAuthorization(StaffDirectory);
+const AuthorizedAboutUs = withAuthorization(AboutUs);
+const AuthorizedNursesByCampusPage = withAuthorization(NursesByCampusPage);
+const AuthorizedCompleteProfile = withAuthorization(CompleteProfile);
 
 const App = () => (
   <AuthProvider>
@@ -61,7 +67,7 @@ const App = () => (
           path="/patients"
           element={
             <Layout>
-              <AuthorizedPatients allowedRoles={["nurse", "doctor"]} />
+              <AuthorizedPatients allowedRoles={["nurse"]} />
             </Layout>
           }
         />
@@ -77,7 +83,7 @@ const App = () => (
           path="/prescriptions"
           element={
             <Layout>
-              <AuthorizedPrescriptions allowedRoles={["doctor"]} />
+              <AuthorizedPrescriptions allowedRoles={["nurse"]} />
             </Layout>
           }
         />
@@ -117,7 +123,7 @@ const App = () => (
           path="/history"
           element={
             <Layout>
-              <AuthorizedHistory allowedRoles={["nurse"]} />
+              <AuthorizedClinicHistory allowedRoles={["nurse", "doctor", "patient"]} />
             </Layout>
           }
         />
@@ -125,7 +131,7 @@ const App = () => (
           path="/reports"
           element={
             <Layout>
-              <AuthorizedReports allowedRoles={["nurse"]} />
+              <AuthorizedAnalytics allowedRoles={["nurse"]} />
             </Layout>
           }
         />
@@ -150,6 +156,30 @@ const App = () => (
           element={
             <Layout>
               <AuthorizedPatientLanding allowedRoles={["patient"]} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/about"
+          element={
+            <Layout>
+              <AuthorizedAboutUs allowedRoles={["nurse", "doctor", "patient"]} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/nurses-by-campus"
+          element={
+            <Layout>
+              <AuthorizedNursesByCampusPage allowedRoles={["doctor"]} />
+            </Layout>
+          }
+        />
+        <Route
+          path="/complete-profile"
+          element={
+            <Layout>
+              <AuthorizedCompleteProfile allowedRoles={["patient"]} />
             </Layout>
           }
         />

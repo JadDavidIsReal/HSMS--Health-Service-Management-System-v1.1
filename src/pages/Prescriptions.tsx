@@ -55,7 +55,7 @@ const Prescriptions: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredPrescriptions.map((prescription) => (
-          <div key={prescription.id} className="border rounded-md p-4 hover:shadow-md transition-shadow">
+          <div key={prescription.id} className="border rounded-md p-4 hover:shadow-md transition-shadow printable-area">
             <div className="flex justify-between items-start">
               <div>
                 <h2 className="text-lg font-bold">{prescription.medicine}</h2>
@@ -76,6 +76,14 @@ const Prescriptions: React.FC = () => {
               <div className="border-t pt-3">
                 <p className="text-sm font-medium mb-1">Instructions:</p>
                 <p className="text-sm text-gray-500">{prescription.instructions}</p>
+              </div>
+              <div className="border-t pt-3 mt-3">
+                <button
+                  onClick={() => window.print()}
+                  className="w-full text-center bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded"
+                >
+                  Print
+                </button>
               </div>
             </div>
           </div>

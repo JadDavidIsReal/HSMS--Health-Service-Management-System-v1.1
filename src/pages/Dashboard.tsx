@@ -1,12 +1,11 @@
 import React from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { mockAppointments } from '../data/mockData';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 
 const Dashboard: React.FC = () => {
-  const { user } = useAuth();
+  const { user, appointments } = useAuth();
 
-  const recentConsultations = mockAppointments
+  const recentConsultations = appointments
     .filter(a => a.status === 'Completed')
     .slice(0, 3);
 
